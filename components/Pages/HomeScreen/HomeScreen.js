@@ -6,11 +6,23 @@
  * @flow
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import GlobalContext from '../../../contexts/Global/GlobalContext';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Button } from 'react-native';
 import { Header, LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
 import styled from 'styled-components/native';
+import { Button as ButtonM } from 'react-native-paper';
+import { NavigationActions, withNavigation } from 'react-navigation';
+import localStorageSafe from '../../../utls/localStorageSafe';
+import Link from '../../Routes/Link';
+const ButtonLink = withNavigation(({ navigation, children, to, params, icon }) => {
+    const _onPress = () => navigation.navigate({ routeName: to, params });
+    return (
+        <ButtonM icon={icon} mode='contained' onPress={() => navigation.dispatch({})}>
+            {children}
+        </ButtonM>
+    );
+});
 
 const SectionTitle = styled.Text`
     color: ${Colors.dark};
@@ -33,7 +45,13 @@ const HomeScreen = (props) => {
                         </View>
                     )}
                     <View>
-                        <Button title='Go to Work' onPress={() => props.navigation.navigate('Work')} />
+                        <ButtonM icon='camera' mode='contained' onPress={() => localStorageSafe.removeItem('auth')}>
+                            Press me
+                        </ButtonM>
+                        <Button title='Go to Work' onPress={() => props.navigation.navigate({ routeName: 'Work', params: { id: 1 } })} />
+                        <Link to='Auth'>
+                            <Text>Auth</Text>
+                        </Link>
                     </View>
                     <View style={styles.body}>
                         <View style={styles.sectionContainer}>
@@ -65,10 +83,17 @@ const HomeScreen = (props) => {
         </View>
     );
 };
-HomeScreen.navigationOptions = ({ navigation }) => ({
-    headerLeft: <Button onPress={() => navigation.navigate('Modal')} title='Info' color='#333' />,
-    title: 'Home'
-});
+HomeScreen.navigationOptions = ({ navigation }) => {
+    let tabBarVisible = true;
+    if (navigation.state.index > 0) {
+        tabBarVisible = false;
+    }
+    return {
+        headerLeft: <Button onPress={() => navigation.navigate('Modal')} title='Info' color='#333' />,
+        title: 'Home',
+        tabBarVisible
+    };
+};
 
 const styles = StyleSheet.create({
     scrollView: {

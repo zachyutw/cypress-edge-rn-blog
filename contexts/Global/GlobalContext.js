@@ -4,7 +4,8 @@ const Context = createContext({});
 
 export const Provider = (props) => {
     const [ state, setState ] = useState({ global: true });
-    return <Context.Provider value={{ state, setState }}>{props.children}</Context.Provider>;
+    const [ navigation, setNavigation ] = useState(null);
+    return <Context.Provider value={{ state, setState, navigation, setNavigation }}>{props.children}</Context.Provider>;
 };
 
 export const withContext = (Componet) => (props) => {

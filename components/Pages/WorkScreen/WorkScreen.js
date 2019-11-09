@@ -6,12 +6,16 @@
  * @flow
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Button } from 'react-native';
 
 import { Header, LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
 
-const WorkScreen = (props) => {
+const WorkScreen = ({ navigation }) => {
+    useEffect(() => {
+        // console.log(navigation.state.params);
+    }, []);
+
     return (
         <View>
             <StatusBar barStyle='dark-content' />
@@ -24,7 +28,7 @@ const WorkScreen = (props) => {
                         </View>
                     )}
                     <View>
-                        <Button title='Go to Home' onPress={() => props.navigation.navigate('Home')} />
+                        <Button title='Go to Home' onPress={() => navigation.navigate('Home')} />
                     </View>
                     <View style={styles.body}>
                         <View style={styles.sectionContainer}>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>571377425932-53d4rrjp2jogl3bmlr3oclhdj3s5mnbl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.571377425932-53d4rrjp2jogl3bmlr3oclhdj3s5mnbl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDda85N9fs_4fAWyi4axUCaNhHy769TOTU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>571377425932</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.cypressEdgeRnBlog</string>
+	<key>PROJECT_ID</key>
+	<string>soy-haven-237204</string>
+	<key>STORAGE_BUCKET</key>
+	<string>soy-haven-237204.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:571377425932:ios:3ddfc3e43e12b76cc2d829</string>
+	<key>DATABASE_URL</key>
+	<string>https://soy-haven-237204.firebaseio.com</string>
+</dict>
+</plist>
