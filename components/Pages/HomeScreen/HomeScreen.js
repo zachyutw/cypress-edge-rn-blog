@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, useEffect } from 'react';
 import GlobalContext from '../../../contexts/Global/GlobalContext';
 import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Button } from 'react-native';
 import { Header, LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
@@ -15,6 +15,7 @@ import { Button as ButtonM } from 'react-native-paper';
 import { NavigationActions, withNavigation } from 'react-navigation';
 import localStorageSafe from '../../../utls/localStorageSafe';
 import Link from '../../Routes/Link';
+
 const ButtonLink = withNavigation(({ navigation, children, to, params, icon }) => {
     const _onPress = () => navigation.navigate({ routeName: to, params });
     return (
@@ -48,8 +49,8 @@ const HomeScreen = (props) => {
                         <ButtonM icon='camera' mode='contained' onPress={() => localStorageSafe.removeItem('auth')}>
                             Press me
                         </ButtonM>
-                        <Button title='Go to Work' onPress={() => props.navigation.navigate({ routeName: 'Work', params: { id: 1 } })} />
-                        <Link to='Auth'>
+                        <Button title='Go to Work' onPress={() => props.navigation.navigate({ routeName: 'ODDatasetList', params: { id: 1 } })} />
+                        <Link to='AuthLogin'>
                             <Text>Auth</Text>
                         </Link>
                     </View>
@@ -82,17 +83,6 @@ const HomeScreen = (props) => {
             </SafeAreaView>
         </View>
     );
-};
-HomeScreen.navigationOptions = ({ navigation }) => {
-    let tabBarVisible = true;
-    if (navigation.state.index > 0) {
-        tabBarVisible = false;
-    }
-    return {
-        headerLeft: <Button onPress={() => navigation.navigate('Modal')} title='Info' color='#333' />,
-        title: 'Home',
-        tabBarVisible
-    };
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import GlobalContext from '../../contexts/Global/GlobalContext';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
@@ -10,12 +10,13 @@ import { View } from 'react-native';
 import HomeScreen from '../Pages/HomeScreen/HomeScreen';
 import WorkScreen from '../Pages/WorkScreen/WorkScreen';
 import ModalScreen from '../Pages/ModalScreen/ModalScreen';
-import AuthScreen from '../Pages/AuthScreen/AuthScreen';
+
 import AuthLoginScreen from '../Pages/AuthLoginSceen/AuthLoginSceen';
 import MenuScreen from '../Pages/MenuScreen/MenuScreen';
 import ProfileSceen from '../Pages/ProfileSceen/ProfileSceen';
 import AuthSignUpScreen from '../Pages/AuthSignUpScreen/AuthSignUpScreen';
 import LinearGradient from 'react-native-linear-gradient';
+import ODDetailScreen from '../Pages/ODDetailScreen/ODDetailScreen';
 const MaterialBottomTab = ({ tintColor, focused, iconName }) => (
     <View>
         <Ionicons style={[ { color: tintColor } ]} size={focused ? 22 : 25} name={iconName} />
@@ -71,22 +72,12 @@ const MenuStack = createStackNavigator(
         initialRouteName: 'Menu'
     }
 );
-const HomeNavStack = createStackNavigator(
-    {
-        Home: { screen: HomeScreen },
-        Work: { screen: WorkScreen }
-    },
-    {
-        initialRouteName: 'Home'
-    }
-);
 
 const HomeStack = createStackNavigator(
     {
-        Home: { screen: HomeNavStack },
+        Home: { screen: HomeScreen },
         Modal: { screen: ModalScreen },
-        Auth: { screen: AuthScreen },
-        Login: { screen: AuthLoginScreen }
+        AuthLogin: { screen: AuthLoginScreen }
     },
     {
         initialRouteName: 'Home'
@@ -98,9 +89,22 @@ HomeStack.navigationOptions = ({ navigation }) => {
         tabBarVisible = false;
     }
     return {
+        header: null,
         tabBarVisible
     };
 };
+
+const ODDatasetListStack = createStackNavigator(
+    {
+        ODDatasetList: { screen: WorkScreen },
+        ODDetail: { screen: ODDetailScreen }
+    },
+    {
+        initialRouteName: 'ODDatasetList',
+        mode: 'modal'
+    }
+);
+
 const TabNavigator = createMaterialBottomTabNavigator(
     {
         Home: {
@@ -110,10 +114,10 @@ const TabNavigator = createMaterialBottomTabNavigator(
                 tabBarIcon: (props) => <MaterialBottomTab {...props} iconName='ios-home' />
             }
         },
-        Work: {
-            screen: WorkScreen,
+        ODDatasetList: {
+            screen: ODDatasetListStack,
             navigationOptions: {
-                tabBarLabel: 'Work',
+                tabBarLabel: 'VanArt',
                 tabBarIcon: (props) => <MaterialBottomTab {...props} iconName='ios-person' />,
                 activeColor: '#f0edf6',
                 inactiveColor: '#578CD1',
@@ -125,7 +129,6 @@ const TabNavigator = createMaterialBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: 'Menu',
                 tabBarIcon: (props) => <MaterialBottomTab {...props} iconName='ios-menu' />,
-
                 activeColor: '#f0edf6',
                 inactiveColor: '#578CD1',
                 barStyle: { backgroundColor: '#252B39' }
@@ -133,14 +136,14 @@ const TabNavigator = createMaterialBottomTabNavigator(
         }
     },
     {
-        shifting: true,
+        // shifting: true,
         initialRouteName: 'Home',
         activeColor: '#f0edf6',
         inactiveColor: '#578CD1',
         barStyle: { backgroundColor: '#252B39' },
+
         defaultNavigationOptions: {
-            gesturesEnabled: true,
-            swipeEnabled: true
+            header: null
         }
     }
 );
@@ -162,5 +165,13 @@ function Routes ({ theme }){
         />
     );
 }
-
+export const pushTo = (routeName, params, action) => {
+    return navigator.dispatch(
+        NavigationActions.navigate({
+            routeName,
+            params,
+            action
+        })
+    );
+};
 export default withTheme(Routes);

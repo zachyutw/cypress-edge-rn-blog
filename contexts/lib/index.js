@@ -11,12 +11,12 @@ export const Condition = (action = {}) => {
 
 export const dispatchAction = (dispatch, promsie, actionType = 'Action') => async (data) => {
     try {
-        dispatch({ actionType: actionType + '_Start' });
+        dispatch({ actionType: actionType + '_START' });
         const payload = await promsie(data);
         dispatch({ actionType, payload });
         return { ...data, ...payload };
     } catch (error) {
-        dispatch({ actionType: actionType + '_Fail' });
+        dispatch({ actionType: actionType + '_FAIL' });
         throw error;
     }
 };

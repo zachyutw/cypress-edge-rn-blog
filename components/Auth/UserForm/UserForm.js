@@ -27,7 +27,7 @@ const fieldAdaptor = (field, fieldConfig = {}) => {
     };
 };
 const formFeildKeyValue = {
-    email: { name: 'email', type: 'text', label: 'Email', pattern: new RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i), required: true },
+    // email: { name: 'email', type: 'text', label: 'Email', pattern: new RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i), required: true },
     displayName: { name: 'displayName', type: 'text', label: 'Display Name', required: true },
     phoneNumber: { name: 'phoneNumber', type: 'text', label: 'Phone Number', pattern: new RegExp(/^[+]?(\d{1,2})?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) },
     coffee: {
@@ -66,13 +66,7 @@ const validate = (fields) => (values) => {
 };
 
 const UserFormFieldForm = ({ field, actionType }) => {
-    const {
-        state: { user, isLoading },
-        onChange = (data) => {
-            console.log(data);
-            console.log('submit');
-        }
-    } = useContext(AuthContext);
+    const { state: { user, isLoading }, onChange } = useContext(AuthContext);
     const { form } = useForm({ onChange, validate: validate(Object.values(formFeildKeyValue)) });
     const { values, valid } = form.getState();
     const fieldConfig = fieldAdaptor(useField(field.name, form), field);
@@ -114,13 +108,7 @@ const getFinalFieldEntries = (form, formFeildKeyValue) => {
     return Object.entries(formFeildKeyValue).map(([ filedName, field ]) => fieldAdaptor(useField(field.name, form), field));
 };
 const UserForm = ({ actionType }) => {
-    const {
-        state: { user, isLoading },
-        onChange = (data) => {
-            console.log(data);
-            console.log('submit');
-        }
-    } = useContext(AuthContext);
+    const { state: { user, isLoading }, onChange } = useContext(AuthContext);
     const { form } = useForm({ onSubmit: onChange, validate: validate(Object.values(formFeildKeyValue)) });
     const { values, valid } = form.getState();
     const fieldEntries = getFinalFieldEntries(form, formFeildKeyValue);
@@ -131,7 +119,7 @@ const UserForm = ({ actionType }) => {
 
     const _onSubmit = useCallback(
         () => {
-            onChange({ ...values, actionTyspe });
+            onChange({ payload: values, actionType: 'updateProfile' });
         },
         [ values, actionType ]
     );
@@ -141,13 +129,13 @@ const UserForm = ({ actionType }) => {
         },
         [ user ]
     );
-    console.obj(values);
+    // console.obj(values);
     return (
         <View>
             {fieldEntries.map((field) => <Input key={field.name} {...field} />)}
             <SubmitView>
                 <Button loading={isLoading} disabled={!valid} mode='contained' onPress={_onSubmit}>
-                    Submit
+                    Save
                 </Button>
             </SubmitView>
         </View>

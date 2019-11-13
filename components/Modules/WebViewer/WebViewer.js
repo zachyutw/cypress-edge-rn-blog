@@ -16,7 +16,7 @@ const WebViewer = ({ uri }) => {
       link.href = './site/index.html?${params}';
       link.click();
     }`;
-    console.log(state);
+
     return (
         <WebView
             cacheEnabled={true}

@@ -6,54 +6,81 @@
  * @flow
  */
 
-import React, { useEffect } from 'react';
-import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, Button } from 'react-native';
-
+import React, { useEffect, useContext, useCallback } from 'react';
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, RefreshControl } from 'react-native';
 import { Header, LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
-
-const WorkScreen = ({ navigation }) => {
+import OpenDataContext, { withContext as withOpenData } from '../../../contexts/OpenData/OpenDataContext';
+import { Card, Title, Surface, ActivityIndicator } from 'react-native-paper';
+import styled from 'styled-components';
+import OpenDataItem from '../../OpenData/OpenDataItem/OpenDataItem';
+import { debounce } from 'lodash';
+const StyledOpenDataList = styled(View)`
+    padding: 0 10px;
+`;
+const StyledLoadingView = styled(View)`
+    height:  ${({ loading }) => (loading ? '500' : '0')} ;
+    flex:1;
+    justify-content:center;
+    
+`;
+const LoadingView = ({ loading }) => {
+    return (
+        <StyledLoadingView loading={loading}>
+            <ActivityIndicator animating={loading} />
+        </StyledLoadingView>
+    );
+};
+const StyledHeader = styled(Surface)`
+    padding:14px;
+`;
+const StyledTitle = styled(Title)`
+    padding:14px;
+`;
+const OpenDataListHeader = () => {
+    return (
+        <StyledHeader>
+            <StyledTitle>Vancouver Public Arts</StyledTitle>
+        </StyledHeader>
+    );
+};
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+};
+const ODDatasetListScreen = ({ navigation, screenProps: { theme } }) => {
+    const { state: { items = [], condition, params }, onLoad, onChange } = useContext(OpenDataContext);
     useEffect(() => {
-        // console.log(navigation.state.params);
+        onLoad(navigation.state);
     }, []);
-
+    const _onLoadMore = ({ nativeEvent }) => {
+        // event.persist();
+        console.log('loadmore');
+        if (isCloseToBottom(nativeEvent)) {
+            onChange({ actionType: 'loadItems', params: { ...params, start: params.start + 1 } });
+        }
+        // console.log(nativeEvent);
+    };
+    // debounce(_onLoadMore, 1000)
+    const _onRefresh = useCallback(
+        () => {
+            console.log('refresh');
+            onLoad(navigation.state);
+        },
+        [ navigation ]
+    );
+    // onMomentumScrollBegin = { _onLoadMore }
     return (
         <View>
             <StatusBar barStyle='dark-content' />
             <SafeAreaView>
-                <ScrollView contentInsetAdjustmentBehavior='automatic' style={styles.scrollView}>
-                    <Header />
-                    {global.HermesInternal == null ? null : (
-                        <View style={styles.engine}>
-                            <Text style={styles.footer}>Engine: WorkScreen</Text>
-                        </View>
-                    )}
-                    <View>
-                        <Button title='Go to Home' onPress={() => navigation.navigate('Home')} />
-                    </View>
+                <ScrollView scrollEventThrottle={16} refreshControl={<RefreshControl refreshing={condition.loading} onRefresh={_onRefresh} />} onMomentumScrollEnd={_onLoadMore} contentInsetAdjustmentBehavior='automatic' style={styles.scrollView}>
+                    <OpenDataListHeader />
+
                     <View style={styles.body}>
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>WorkScreen</Text>
-                            <Text style={styles.sectionDescription}>
-                                Edit <Text style={styles.highlight}>App.js</Text> to change this screen and then come back to see your edits.
-                            </Text>
-                        </View>
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>See Your Changes123</Text>
-                            <Text style={styles.sectionDescription}>
-                                <ReloadInstructions />
-                            </Text>
-                        </View>
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>Debug</Text>
-                            <Text style={styles.sectionDescription}>
-                                <DebugInstructions />
-                            </Text>
-                        </View>
-                        <View style={styles.sectionContainer}>
-                            <Text style={styles.sectionTitle}>Learn More</Text>
-                            <Text style={styles.sectionDescription}>Read the docs to discover what to do next:</Text>
-                        </View>
-                        <LearnMoreLinks />
+                        <StyledOpenDataList>
+                            {items.length === 0 && <LoadingView loading={condition.loading} />}
+                            {items.map((item, index) => <OpenDataItem key={index} item={item} />)}
+                        </StyledOpenDataList>
                     </View>
                 </ScrollView>
             </SafeAreaView>
@@ -100,4 +127,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default WorkScreen;
+export default withOpenData(ODDatasetListScreen);

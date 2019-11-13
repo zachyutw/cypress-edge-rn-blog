@@ -53,7 +53,7 @@ const PickerFieldValue = withTheme(({ theme, value, label, actived }) => {
 const InputPicker = ({ options = [], disabled, mode, label, itemStyle, testID, style, value, onChange, theme }) => {
     const [ actived, setActived ] = useState(false);
     const toggleActived = useCallback(() => setActived((value) => !value), []);
-    console.obj(theme);
+    // console.obj(theme);
     return (
         <View>
             <StyledField theme={theme} backgroundColor='red'>

@@ -1,12 +1,16 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useForm, useField } from 'react-final-form-hooks';
 import { View, TouchableHighlight } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, List } from 'react-native-paper';
 import InputText from '../../Modules/Input/InputText';
 import _ from 'lodash';
 import styled from 'styled-components';
 import AuthContext from '../../../contexts/Global/AuthContext';
 import Link from '../../Routes/Link';
+
+import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
+import { signInWithGoolge } from '../../../API/auth.firebase.api';
+
 const StyledInputText = styled(InputText)`
         margin:10px;
         color:#333;
@@ -68,7 +72,14 @@ const validate = (fields) => (values) => {
     });
     return errors;
 };
+const AuthFormSignGoogleButton = () => {
+    const { onChange } = useContext(AuthContext);
+    const _onChange = useCallback(() => {
+        onChange({ actionType: 'signInGoogle' });
+    }, []);
 
+    return <GoogleSigninButton style={{ width: 192, height: 48 }} size={GoogleSigninButton.Size.Wide} color={GoogleSigninButton.Color.Dark} onPress={_onChange} disabled={false} />;
+};
 const AuthSignOutButton = () => {
     const { onChange } = useContext(AuthContext);
     const _onChange = useCallback(() => {
@@ -76,10 +87,18 @@ const AuthSignOutButton = () => {
     }, []);
     return (
         <TouchableHighlight onPress={_onChange}>
-            <Text>Logout</Text>
+            <List.Item title='Logout' left={(props) => <List.Icon {...props} icon='power-settings-new' />} />
         </TouchableHighlight>
     );
 };
+const AuthFormLoginLink = () => {
+    return (
+        <Link to='Auth'>
+            <List.Item title='Login' left={(props) => <List.Icon {...props} icon='account-box' />} />
+        </Link>
+    );
+};
+
 const AuthFormSignUp = ({
     onSubmit = (data) => {
         console.log(data, 'submit');
@@ -103,11 +122,12 @@ export const AuthFormLogin = () => {
     return (
         <React.Fragment>
             <AuthForm initializeValue={{ email: 'jslandclan@gmail.com', password: 'Qwer1234' }} onSubmit={onChange} actionType='loginEmail' fieldNames={[ 'email', 'password' ]} />
+
             <StyledFormFooter>
                 <Link to='AuthSignUp'>
                     <Text>SignUp</Text>
                 </Link>
-                <Link to='Login'>
+                <Link to='AuthLogin'>
                     <Text>Forget Password </Text>
                 </Link>
             </StyledFormFooter>
@@ -118,8 +138,7 @@ export const AuthFormLogin = () => {
 const StyledAuthForm = styled.View`width: 100%;`;
 const AuthForm = ({
     onSubmit = (data) => {
-        console.log(data);
-        console.log('submit');
+        // console.obj(data);
     },
     isLoading,
     actionType,
@@ -131,7 +150,7 @@ const AuthForm = ({
     const fields = fieldNames.map((name) => fieldAdaptor(useField(name, form), formFeildKeyValue[name]));
     const _onSubmit = useCallback(
         () => {
-            onSubmit({ ...values, actionType });
+            onSubmit({ payload: values, actionType });
         },
         [ values, actionType ]
     );
@@ -150,4 +169,6 @@ const AuthForm = ({
 AuthForm.Login = AuthFormLogin;
 AuthForm.SignUp = AuthFormSignUp;
 AuthForm.SignOutButton = AuthSignOutButton;
+AuthForm.SignGoogleButton = AuthFormSignGoogleButton;
+AuthForm.LoginLink = AuthFormLoginLink;
 export default AuthForm;
