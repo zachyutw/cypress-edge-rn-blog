@@ -25,7 +25,7 @@
         "react": "16.9.0",
         "react-content-loader": "^4.3.2",
         "react-final-form-hooks": "^2.0.1",
-        "react-native": "0.61.2",
+        "react-native": "0.62.3",
         "react-native-dotenv": "^0.2.0",
         "react-native-gesture-handler": "^1.4.1",
         "react-native-linear-gradient": "^2.5.6",
